@@ -1,0 +1,265 @@
+MongoDB tutorial
+
+To try out an interactive tutorial type `tutorial`
+> help
+help
+    Print out this help information.
+show collections
+    Show collections in current database.
+db.foo.find()
+    List objects in collection foo.
+db.foo.find(query)
+    List objects in foo matching query.
+db.foo.update(query, update, upsert, multi)
+    Updates an object matching query with the given update if no documents match and upsert is true, update is inserted if multiple documents matching query exist and multi is true all matching documents are updated.
+db.foo.remove(query, justOne)
+    Removes all or just one documents matching query.
+db.foo.drop()
+    Removes the foo collection from the database.
+it
+    Get next batch of results from a query.
+reset
+    Resets the database to its initial state.
+
+
+> var a = 5;
+> a*10;
+50
+> for(i=0;i<10;i++) { print('hello'); };
+hello
+hello
+hello
+hello
+hello
+hello
+hello
+hello
+hello
+hello
+9
+> next
+MongoDB is a document database. This means that we store data as documents, which are similar to JavaScript objects. Here below are a few sample JS objects:
+  var a = {age: 25};
+  var n = {name: 'Ed', languages: ['c', 'ruby', 'js']};
+  var student = {name: 'Jim', scores: [75, 99, 87.2]};
+Go ahead and create some documents, then enter 'next'
+> var a = {age: 25};
+> var n = {name: 'Ed', languages: ['c', 'ruby', 'js']};
+> var student = {name: 'Jim', scores: [75, 99, 87.2]};
+
+> next
+Here's how you save a document to MongoDB:
+  db.scores.save({a: 99});
+This says, "save the document '{a: 99}' to the 'scores' collection.".
+To confirm that it's been saved properly:
+db.scores.find();
+> db.scores.save({a: 99});
+> db.scores.find();
+{ "_id" : ObjectId("53c7f99a1cdcaf27f4e116c1"), "a" : 99 }
+
+> next
+Try adding some documents to the scores collection:
+  for(i=0; i<20; i++) { db.scores.save({a: i, exam: 5}) };
+Try that, then enter
+  db.scores.find();
+to see if the save succeeded. Since the shell only displays 10 results at time, you'll need to enter the 'it' command to iterate over the rest.
+> for(i=0; i<20; i++) { db.scores.save({a: i, exam: 5}) };
+19
+> db.scores.find()
+{ "_id" : ObjectId("53c7f99a1cdcaf27f4e116c1"), "a" : 99 }
+{ "_id" : ObjectId("53c7f9f04069472bfd8ce5fa"), "a" : 0, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f11cdcaf27f4e116d9"), "a" : 1, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f24069472bfd8ce5fc"), "a" : 2, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f31cdcaf27f4e116db"), "a" : 3, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f41cdcaf27f4e116dd"), "a" : 4, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f54069472bfd8ce5fe"), "a" : 5, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f61cdcaf27f4e116df"), "a" : 6, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f71cdcaf27f4e116e1"), "a" : 7, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f74069472bfd8ce600"), "a" : 8, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f81cdcaf27f4e116e3"), "a" : 9, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f94069472bfd8ce602"), "a" : 10, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fa4069472bfd8ce604"), "a" : 11, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fb4069472bfd8ce606"), "a" : 12, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fc4069472bfd8ce608"), "a" : 13, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fd4069472bfd8ce60a"), "a" : 14, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fe4069472bfd8ce60c"), "a" : 15, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9ff4069472bfd8ce60e"), "a" : 16, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9ff4069472bfd8ce610"), "a" : 17, "exam" : 5 }
+{ "_id" : ObjectId("53c7fa004069472bfd8ce612"), "a" : 18, "exam" : 5 }
+Type "it" for more
+> it
+{ "_id" : ObjectId("53c7fa014069472bfd8ce614"), "a" : 19, "exam" : 5 }
+
+
+> next
+You've already tried a few queries, but let's make them more specific.
+Let's find all documents where a == 2:
+  db.scores.find({a: 2});
+Or we could find all documents where a > 15:
+  db.scores.find({a: {'$gt': 15}})
+> db.scores.find({a: 2});
+{ "_id" : ObjectId("53c7f9f24069472bfd8ce5fc"), "a" : 2, "exam" : 5 }
+> db.scores.find({a: {'$gt': 15}})
+{ "_id" : ObjectId("53c7f99a1cdcaf27f4e116c1"), "a" : 99 }
+{ "_id" : ObjectId("53c7f9ff4069472bfd8ce60e"), "a" : 16, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9ff4069472bfd8ce610"), "a" : 17, "exam" : 5 }
+{ "_id" : ObjectId("53c7fa004069472bfd8ce612"), "a" : 18, "exam" : 5 }
+{ "_id" : ObjectId("53c7fa014069472bfd8ce614"), "a" : 19, "exam" : 5 }
+
+> next
+`$gt` is one of many special query operators. Here are few others:
+  {a: {$lt: 5}} // Less Than
+  {a: {$gte: 10}} // Greater than or equal to
+  {a: {$ne: 'b'}} // Not Equal To
+  {a: {$in: ['a', 'b', 'c']}} // Exists in array
+Try out a few queries, before moving onto the next step.
+> {a: {$lt: 5}}
+5
+> {a: {$gte: 10}}
+10
+> {a: {$ne: 'b'}}
+b
+> {a: {$in: ['a', 'b', 'c']}}
+[ "a", "b", "c" ]
+> db.scores.find({a: {'$ne': 4}})
+{ "_id" : ObjectId("53c7f99a1cdcaf27f4e116c1"), "a" : 99 }
+{ "_id" : ObjectId("53c7f9f04069472bfd8ce5fa"), "a" : 0, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f11cdcaf27f4e116d9"), "a" : 1, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f24069472bfd8ce5fc"), "a" : 2, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f31cdcaf27f4e116db"), "a" : 3, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f54069472bfd8ce5fe"), "a" : 5, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f61cdcaf27f4e116df"), "a" : 6, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f71cdcaf27f4e116e1"), "a" : 7, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f74069472bfd8ce600"), "a" : 8, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f81cdcaf27f4e116e3"), "a" : 9, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9f94069472bfd8ce602"), "a" : 10, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fa4069472bfd8ce604"), "a" : 11, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fb4069472bfd8ce606"), "a" : 12, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fc4069472bfd8ce608"), "a" : 13, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fd4069472bfd8ce60a"), "a" : 14, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fe4069472bfd8ce60c"), "a" : 15, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9ff4069472bfd8ce60e"), "a" : 16, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9ff4069472bfd8ce610"), "a" : 17, "exam" : 5 }
+{ "_id" : ObjectId("53c7fa004069472bfd8ce612"), "a" : 18, "exam" : 5 }
+{ "_id" : ObjectId("53c7fa014069472bfd8ce614"), "a" : 19, "exam" : 5 }
+> db.scores.find({a: {$gte: 10}})
+{ "_id" : ObjectId("53c7f99a1cdcaf27f4e116c1"), "a" : 99 }
+{ "_id" : ObjectId("53c7f9f94069472bfd8ce602"), "a" : 10, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fa4069472bfd8ce604"), "a" : 11, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fb4069472bfd8ce606"), "a" : 12, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fc4069472bfd8ce608"), "a" : 13, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fd4069472bfd8ce60a"), "a" : 14, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9fe4069472bfd8ce60c"), "a" : 15, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9ff4069472bfd8ce60e"), "a" : 16, "exam" : 5 }
+{ "_id" : ObjectId("53c7f9ff4069472bfd8ce610"), "a" : 17, "exam" : 5 }
+{ "_id" : ObjectId("53c7fa004069472bfd8ce612"), "a" : 18, "exam" : 5 }
+{ "_id" : ObjectId("53c7fa014069472bfd8ce614"), "a" : 19, "exam" : 5 }
+
+> next
+Now create a couple documents like these for updating:
+  db.users.insert({name: 'Johnny', languages: ['ruby', 'c']});
+  db.users.insert({name: 'Sue', languages: ['scala', 'lisp']});
+Confirm they were saved - with our favorite:
+  db.users.find()
+Update Johnny's name and languages: 
+  db.users.update({name: 'Johnny'}, {name: 'Cash', languages: ['English']});
+Use our favorite find query to inspect the resulting documents.  Notice that the array update overwrote Johnny's languages!
+Play with some more updates, before continuing on.
+> db.users.insert({name: 'Johnny', languages: ['ruby', 'c']});
+> db.users.insert({name: 'Sue', languages: ['scala', 'lisp']});
+> db.users.find()
+{
+	"_id" : ObjectId("53c7fc401cdcaf27f4e116fe"),
+	"languages" : [
+		"ruby",
+		"c"
+	],
+	"name" : "Johnny"
+}
+{
+	"_id" : ObjectId("53c7fc514069472bfd8ce632"),
+	"languages" : [
+		"scala",
+		"lisp"
+	],
+	"name" : "Sue"
+}
+> db.users.update({name: 'Johnny'}, {name: 'Cash', languages: ['English']});
+> db.users.find()
+{
+	"_id" : ObjectId("53c7fc401cdcaf27f4e116fe"),
+	"languages" : [
+		"English"
+	],
+	"name" : "Cash"
+}
+{
+	"_id" : ObjectId("53c7fc514069472bfd8ce632"),
+	"languages" : [
+		"scala",
+		"lisp"
+	],
+	"name" : "Sue"
+}
+
+
+> next
+Update has the sometimes unexpected behavior of replacing the entire document.  However, we can use update operators to only modify parts of our documents.
+Update Sue's languages without overwriting them:
+  db.users.update({name: 'Sue'}, { $addToSet: {languages: ['ruby']}});
+Or we can add a new field to Cash
+  db.users.update({name: 'Cash'}, {'$set': {'age': 50} });
+You can also push and pull items from arrays:
+  db.users.update({name: 'Sue'}, {'$push': {'languages': 'ruby'} });
+  db.users.update({name: 'Sue'}, {'$pull': {'languages': 'scala'} });
+Give these a try, check the results, and then enter 'next',
+> db.users.update({name: 'Sue'}, { $addToSet: {languages: ['ruby']}});
+> db.users.update({name: 'Cash'}, {'$set': {'age': 50} });
+> db.users.update({name: 'Sue'}, {'$push': {'languages': 'ruby'} });
+> db.users.update({name: 'Sue'}, {'$pull': {'languages': 'scala'} });
+> db.users.find()
+{
+	"_id" : ObjectId("53c7fc401cdcaf27f4e116fe"),
+	"languages" : [
+		"English"
+	],
+	"age" : 50,
+	"name" : "Cash"
+}
+{
+	"_id" : ObjectId("53c7fc514069472bfd8ce632"),
+	"languages" : [
+		"lisp",
+		[
+			"ruby"
+		],
+		"ruby"
+	],
+	"name" : "Sue"
+}
+
+
+> next
+To delete matching documents only, add a query selector to the remove method:
+  db.users.remove({name: 'Sue'});
+To delete everything from a collection:
+  db.scores.remove();
+> db.users.remove({name: 'Sue'});
+> db.users.find()
+{
+	"_id" : ObjectId("53c7fc401cdcaf27f4e116fe"),
+	"languages" : [
+		"English"
+	],
+	"age" : 50,
+	"name" : "Cash"
+}
+> db.scores.remove();
+> db.scores.find()
+
+
+> next
+You've reached the end of this simple tutorial.
+Sign up for a chance to win a MongoDB t-shirt or mug by inserting a document (into the 'contest' collection) with three fields: 'email', 'first_name', and 'last_name'.
+> db.contest.insert({email: 'kyang272@yahoo.com', first_name: 'Karen', last_name: 'Yang'});
+Excellent!  You've been entered in a contest to win a MongoDB prize!
