@@ -260,6 +260,4 @@ To delete everything from a collection:
 
 > next
 You've reached the end of this simple tutorial.
-Sign up for a chance to win a MongoDB t-shirt or mug by inserting a document (into the 'contest' collection) with three fields: 'email', 'first_name', and 'last_name'.
-> db.contest.insert({email: 'kyang272@yahoo.com', first_name: 'Karen', last_name: 'Yang'});
-Excellent!  You've been entered in a contest to win a MongoDB prize!
+
